@@ -61,9 +61,10 @@ public class IndexController {
 
     private void exportPDF(int idBill, String nameBill, String dateBill,String nameCustomer, String addressCustomer, String urlFile) {
         String urlHtml = "F:\\SparkMinds\\file_bc\\demo\\demo_export_PDF\\src\\main\\resources\\templates\\billForm.html";
+        InputStream inputStream = null ;
         try {
             //open file html read content into file
-            InputStream inputStream = new FileInputStream(urlHtml);
+            inputStream = new FileInputStream(urlHtml);
             byte[] buffer = new byte[inputStream.available()];
             inputStream.read(buffer);
             String html = new String(buffer);
@@ -82,12 +83,20 @@ public class IndexController {
 
             // process template HTML and paste into parameter
             String processedHtmlContent = templateEngine.process(html, context );
-
             // Convert  HTML to PDF and save a PDF file
             HtmlConverter.convertToPdf(processedHtmlContent, new FileOutputStream(urlFile) , converterProperties);
             System.out.println("PDF file has been created.");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            if(inputStream!=null ){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
